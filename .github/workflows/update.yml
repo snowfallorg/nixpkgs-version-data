@@ -1,0 +1,26 @@
+
+
+name: "Generate package versions"
+on:
+  workflow_dispatch:
+  schedule:
+  - cron: '0 * * * *'
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+    - name: Install Nix
+      uses: cachix/install-nix-action@v18
+      with:
+        extra_nix_config: |
+          access-tokens = github.com=${{ secrets.GITHUB_TOKEN }}
+    - name: Update files
+      run: |
+        sleep $((RANDOM % 60))
+        ./generate-versions.sh
+    - uses: stefanzweifel/git-auto-commit-action@v4
+      with:
+        commit_message: Update databases
