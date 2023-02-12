@@ -15,7 +15,11 @@ nix-instantiate --eval -E "with import $NIXPKGS {}; builtins.listToAttrs (builti
       then (if (lib.isDerivation (builtins.tryEval (pkgs.\"\${name}\")).value)
         then (if (lib.hasAttr \"version\"  (builtins.tryEval (pkgs.\"\${name}\")).value)
           then ((builtins.tryEval (pkgs.\"\${name}\")).value.version)
-        else (\"N/A\"))
+        else (
+          if ((builtins.tryEval (pkgs.lib.getVersion pkgs.\"\${name}\")).success)
+          then ((builtins.tryEval (pkgs.lib.getVersion pkgs.\"\${name}\")).value)
+          else (\"N/A\")
+        ))
       else (\"N/A\"))
     else \"N/A\"); }) (lib.attrNames pkgs)))" --strict --json --impure | jq > $1.json
 brotli ./$1.json
