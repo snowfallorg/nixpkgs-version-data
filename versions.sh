@@ -21,6 +21,6 @@ nix-instantiate --eval -E "with import $NIXPKGS {}; builtins.listToAttrs (builti
           else (\"N/A\")
         ))
       else (\"N/A\"))
-    else \"N/A\"); }) (lib.attrNames pkgs)))" --strict --json --impure | jq > $1.json
+    else \"N/A\"); }) (lib.attrNames pkgs)))" --strict --json --impure | jq 'del(.[] | nulls)' > $1.json
 brotli ./$1.json
 rm $1.json
